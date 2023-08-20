@@ -62,10 +62,10 @@ class SimpleSyslog {
 			char time_buf[32];
 			struct tm timeinfo;
   			if(!getLocalTime(&timeinfo)){
-    				strftime(time_buf, sizeof(time_buf), "-");
+    				snprintf(time_buf, sizeof(time_buf), "-");
   			}
 			else {
-  				strftime(time_buf, sizeof(time_buf), "%Y-%m-%dT%H:%M:%SZ%z");
+  				strftime(time_buf, sizeof(time_buf), "%Y-%m-%dT%H:%M:%SZ%z", &timeinfo));
 			}
 
 			// This is a unit8 instead of a char because that's what udp.write() wants
