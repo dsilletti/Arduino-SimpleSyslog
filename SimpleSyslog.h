@@ -59,9 +59,18 @@ class SimpleSyslog {
 			vsnprintf(buf, 128, format, args);
 			va_end(args);
 
+			char time_buf[32];
+			struct tm timeinfo;
+  			if(!getLocalTime(&timeinfo)){
+    				strftime(time_buf, sizeof(time_buf), "-");
+  			}
+			else {
+  				strftime(time_buf, sizeof(time_buf), "%Y-%m-%dT%H:%M:%SZ%z");
+			}
+
 			// This is a unit8 instead of a char because that's what udp.write() wants
 			uint8_t buffer[MAX_PACKET_SIZE];
-			int len = snprintf((char*)buffer, MAX_PACKET_SIZE, "<%d>%s %s: %s", priority, _hostname, _app, buf);
+			int len = snprintf((char*)buffer, MAX_PACKET_SIZE, "<%d>1 %s %s %s - - - %s", priority, time_buf, _hostname, _app, buf);
 
 			// Send the raw UDP packet
 			SimpleSyslog_udp.beginPacket(_server, _port);
